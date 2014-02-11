@@ -13,7 +13,9 @@ tm.main(function() {
 
     var flow = tm.util.Flow(2, function() {
         var sceneClassName = tm.using(sceneName);
-        app.replaceScene(sceneClassName());
+        app.replaceScene(sceneClassName({
+            time: 1234,
+        }));
     });
 
     var loading = tm.ui.LoadingScene({
@@ -41,11 +43,19 @@ tm.define("MainScene", {
     superClass: "tm.app.Scene",
 
     init: function() {
-        var self = this;
-
-        tm.asset.Manager.get("bgm_main").setLoop(true).play();
-
         this.superInit();
+
+        tm.asset.Manager.get("bgm_main").setVolume(0.25).setLoop(true).play();
+    },
+
+    onenter: function() {
+        this.setup();
+        this.onenter = null;
+    },
+
+    setup: function() {
+
+        var self = this;
 
         this.fromJSON({
             children: {
@@ -127,29 +137,12 @@ tm.define("MainScene", {
             };
         }
 
-        this.countdown = tm.display.Sprite("img_countdown").addChildTo(this);
-        this.countdown.x = SCREEN_CENTER_X;
-        this.countdown.y = SCREEN_CENTER_Y;
-        this.countdown.width = 420;
-        this.countdown.setFrameIndex(2);
+        var scene = CountdownScene();
+        this.app.pushScene(scene);
 
-        this.countdown.tweener
-            .clear()
-            .set({scaleX:0.2, scaleY:0.2}).scale(1, 1000, "easeOutBounce")
-            .call(function() {
-                this.countdown.setFrameIndex(1);
-            }.bind(this))
-            .set({scaleX:0.2, scaleY:0.2}).scale(1, 1000, "easeOutBounce")
-            .call(function() {
-                this.countdown.setFrameIndex(0);
-            }.bind(this))
-            .set({scaleX:0.2, scaleY:0.2}).scale(1, 1000, "easeOutBounce")
-            .call(function() {
-                this.countdown.remove();
-                this.fire(tm.event.Event("startgame"));
-            }.bind(this));
-
-
+        scene.onfinish = function() {
+            this.fire(tm.event.Event("startgame"));
+        }.bind(this);
     },
 
 
@@ -159,13 +152,10 @@ tm.define("MainScene", {
 
         this.update = function(app) {
             var time = this.getTime();
-            time = ((time/10)|0)/100; // 00.00
+            var date = new Date(time);
+            var timeStr = date.format("s:S").slice(0, -1);
 
-            var timeStr = time.toString();
-            if (timeStr.indexOf('.') == -1) timeStr += ".00";
-            var timeStrList = timeStr.split('.');
-
-            this.timeLabel.text = timeStrList[0] + '.' + timeStrList[1].padding(2, '0');
+            this.timeLabel.text = timeStr;
         };
     },
 
@@ -182,6 +172,54 @@ tm.define("MainScene", {
         console.log(e.app.pointing.x |0, e.app.pointing.y |0);
     },
 
+});
+
+tm.define("CountdownScene", {
+    superClass: "tm.app.Scene",
+
+    init: function() {
+        this.superInit();
+
+        this.fromJSON({
+            children: {
+                filter: {
+                    type: "tm.display.RectangleShape",
+
+                    init: [SCREEN_WIDTH, SCREEN_HEIGHT, {
+                        fillStyle: "white",
+                        strokeStyle: "transparent",
+                    }],
+                    originX: 0,
+                    originY: 0,
+                    alpha: 0.5,
+                },
+            },
+        });
+
+        this.countdown = tm.display.Sprite("img_countdown").addChildTo(this);
+        this.countdown.x = SCREEN_CENTER_X;
+        this.countdown.y = SCREEN_CENTER_Y;
+        this.countdown.width = 420;
+        this.countdown.setFrameIndex(2);
+
+
+        this.countdown.tweener
+            .clear()
+            .set({scaleX:0.2, scaleY:0.2}).scale(1, 1000, "easeOutBounce")
+            .call(function() {
+                this.countdown.setFrameIndex(1);
+            }.bind(this))
+            .set({scaleX:0.2, scaleY:0.2}).scale(1, 1000, "easeOutBounce")
+            .call(function() {
+                this.countdown.setFrameIndex(0);
+            }.bind(this))
+            .set({scaleX:0.2, scaleY:0.2}).scale(1, 1000, "easeOutBounce")
+            .call(function() {
+                this.countdown.remove();
+                this.fire(tm.event.Event("finish"));
+                this.app.popScene();
+            }.bind(this));
+    },
 });
 
 tm.define("Piyokawa", {
@@ -254,6 +292,8 @@ tm.define("Piyokawa", {
 
         tm.asset.Manager.get("se_fm005").clone().play();
         tm.asset.Manager.get("se_animal01").clone().play();
+
+        this.piyokawa.label.hide();
     },
 
     update: function() {

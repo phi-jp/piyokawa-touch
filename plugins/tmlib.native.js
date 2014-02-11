@@ -16,7 +16,7 @@ tm.native.isNative = (function() {
     var flag = /piyokawa/i.test(navigator.userAgent);
 
     return function() {
-    	flag;
+    	return flag;
     }
 })();
 
@@ -217,7 +217,7 @@ tm.native.isNative = (function() {
     var loadFunc = function(path) {
         return NativeAudio(path);
     };
-    
+
     tm.asset.Loader.register("wav", loadFunc);
     tm.asset.Loader.register("mp3", loadFunc);
     tm.asset.Loader.register("m4a", loadFunc);
@@ -259,7 +259,7 @@ tm.native.isNative = (function() {
             var self = this;
             
             if (this.loopFlag == false) {
-                yyjtk.api.playSound(this.path, {
+                tm.native.api.playSound(this.path, {
                     volume: this.volume,
                     callback: function() {
                         var e = tm.event.Event("ended");
@@ -268,7 +268,7 @@ tm.native.isNative = (function() {
                 });
             }
             else {
-                yyjtk.api.playMusic(this.path, {
+                tm.native.api.playMusic(this.path, {
                     volume: this.volume,
                     callback: function() {
                         var e = tm.event.Event("ended");
@@ -282,10 +282,10 @@ tm.native.isNative = (function() {
         
         stop: function() {
             if (this.loopFlag == false) {
-                yyjtk.api.stopSound();
+                tm.native.api.stopSound();
             }
             else {
-                yyjtk.api.stopMusic();
+                tm.native.api.stopMusic();
             }
             
             return this;

@@ -998,7 +998,7 @@ if (typeof module !== 'undefined' && module.exports) {
      * @method  format
      * 日付フォーマットに合わせた文字列を返す
      */
-    Date.prototype.format = function(pattern) {
+    Date.defineInstanceMethod("format", function(pattern) {
         /*
         var str = "{y}/{m}/{d}".format({
             y: this.getYear()+1900,
@@ -1016,6 +1016,7 @@ if (typeof module !== 'undefined' && module.exports) {
         var hours   = this.getHours();
         var minutes = this.getMinutes();
         var seconds = this.getSeconds();
+        var millseconds = this.getMilliseconds();
         var str = "";
         
         for (var i=0,len=pattern.length; i<len; ++i) {
@@ -1056,13 +1057,14 @@ if (typeof module !== 'undefined' && module.exports) {
                 case "H": temp = hours.padding(2, '0'); break;
                 case "i": temp = minutes.padding(2, '0'); break;
                 case "s": temp = seconds.padding(2, '0'); break;
+                case "S": temp = millseconds.padding(3, '0'); break;
                 
                 default : temp = ch; break;
             }
             str += temp;
         }
         return str;
-    };
+    });
     
 })();
 
@@ -6803,7 +6805,7 @@ tm.dom = tm.dom || {};
          * 属性をセット
          */
         set: function(name, value) {
-        	var key = "data-" + name.toDash();
+            var key = "data-" + name.toDash();
             this.element.setAttribute(key, value);
 
             return this;
@@ -6813,8 +6815,8 @@ tm.dom = tm.dom || {};
          * 属性をゲット
          */
         get: function(name, value) {
-        	var key = "data-" + name.toDash();
-        	return this.element.attributes[key].value;
+            var key = "data-" + name.toDash();
+            return this.element.attributes[key].value;
         },
     });
     
@@ -7180,12 +7182,12 @@ tm.dom = tm.dom || {};
             this.loaded = false;
 
             if (typeof src == "string") {
-            	this.load(src);
+                this.load(src);
             }
             else {
-	            this.parse(src);
-    			this.loaded = true;
-    			this.dispatchEvent(tm.event.Event("load"));
+                this.parse(src);
+                this.loaded = true;
+                this.dispatchEvent(tm.event.Event("load"));
             }
 
         },
@@ -7194,14 +7196,14 @@ tm.dom = tm.dom || {};
          * @TODO ?
          */
         load: function(path) {
-        	tm.util.Ajax.load({
-        		url: path,
-        		dataType: "json",
-        		success: function(d) {
-        			this.parse(d);
-        			this.loaded = true;
-        		}.bind(this),
-        	});
+            tm.util.Ajax.load({
+                url: path,
+                dataType: "json",
+                success: function(d) {
+                    this.parse(d);
+                    this.loaded = true;
+                }.bind(this),
+            });
         },
 
         /**

@@ -19,6 +19,7 @@ module.exports = function(grunt) {
         "plugins/tmlib.js",
         "plugins/tmlib.native.js",
         "scripts/constant.js",
+        "scripts/resultscene.js",
         "scripts/main.js",
     ];
 
