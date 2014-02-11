@@ -16,8 +16,10 @@ module.exports = function(grunt) {
 ';
     
     var target = [
+        "plugins/tmlib.js",
+        "plugins/tmlib.native.js",
         "scripts/constant.js",
-        "scripts/param.js",
+        "scripts/main.js",
     ];
 
     grunt.initConfig({
@@ -84,5 +86,5 @@ module.exports = function(grunt) {
     }
     grunt.task.loadTasks("tasks");
 
-    grunt.registerTask('default', ['concat:main', 'uglify:main', 'jade']);
+    grunt.registerTask('default', ['concat', 'uglify', 'base64', 'jade']);
 };
