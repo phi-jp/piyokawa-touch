@@ -123,13 +123,21 @@ tm.define("MainScene", {
 
             piyokawa.onpointingstart = function() {
                 if (this.number == self.currentNumber) {
-                    self.currentNumber++;
-                    self.nowNumberLabel.text = self.currentNumber;
-                    self.nowNumberLabel.tweener
-                        .clear()
-                        .set({scaleX:2.5, scaleY:2.5})
-                        .to({scaleX:1.0, scaleY:1.0}, 500, "easeOutBounce");
-                    this.supo();
+                    if (self.currentNumber >= 15) {
+                        self.app.pushScene(ResultScene({
+                            time: self.getTime(),
+                        }))
+                    }
+                    else {
+                        self.currentNumber++;
+
+                        self.nowNumberLabel.text = self.currentNumber;
+                        self.nowNumberLabel.tweener
+                            .clear()
+                            .set({scaleX:2.5, scaleY:2.5})
+                            .to({scaleX:1.0, scaleY:1.0}, 500, "easeOutBounce");
+                        this.supo();
+                    }
                 }
                 else {
                     alert("ぶぶー");

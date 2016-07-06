@@ -64,14 +64,13 @@ tm.define("ResultScene", {
         });
 
         var label = this.timeGroup.label;
-        label.time = 0;
 
         this.timeGroup.textTime.tweener
             .set({scaleX: 4, scaleY: 4})
             .to({scaleX: 1, scaleY: 1}, 500, "easeOutBounce")
             .wait(150)
             .call(function() {
-                var timeStr = (new Date(label.time)).format("s:S").slice(0, -1);
+                var timeStr = (new Date(self.param.time)).format("s:S").slice(0, -1);
                 label.text = timeStr;
             })
             .wait(200)

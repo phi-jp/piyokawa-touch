@@ -17728,8 +17728,13 @@ tm.sound = tm.sound || {};
      * @TODO ?
      */
     tm.sound.WebAudio.prototype.accessor("volume", {
-        get: function()  { return this.source.gain.value; },
-        set: function(v) { this.source.gain.value = v; }
+        get: function()  {
+            return 1;
+            // return this.source.gain.value;
+        },
+        set: function(v) {
+            // this.source.gain.value = v;
+        }
     });
 
     /**
